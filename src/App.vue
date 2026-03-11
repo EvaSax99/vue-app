@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import CarrulusEmendi from './components/CarrulusEmendi.vue';
+import { useProducta } from './composables/useProducta';
+import { useMutare } from './composables/useMutare';
+import PokemonInfo from './components/PokemonInfo.vue';
 // import DesesArr from './typescript/DesesArr.vue';
 // import ControlFlujo from './typescript/ControlFlujo.vue';
 // import ObjectType from './typescript/ObjectType.vue';
@@ -8,56 +10,16 @@ import CarrulusEmendi from './components/CarrulusEmendi.vue';
 // import BasicFunctions from './typescript/BasicFunctions.vue';
 // import DesesObj from './typescript/DesesObj.vue';1
 
-const producta = ref( [
- {
-  id: 1,
-  nomen: 'Camisa',
-  quantitas: 10,
-},
-{
-  id: 2,
-  nomen:'Pantalón',
-  quantitas: 5,
-},
-{
-  id: 3,
-  nomen:'Zapato',
-  quantitas: 3,
-},
-])
- 
 
 
-const quantitatemIncrementa = (id: number) => {
-  const productum = producta.value.find(p => p.id === id);
-  if (!productum) return; 
-  if (productum.quantitas === 0) return;
-  
-  productum.quantitas++;
-}
-
-const quantitatemDecrementa = (id: number) => {
-  const productum = producta.value.find(p => p.id === id);
-  if (!productum) return;
-  if (productum.quantitas === 0) return;
-    productum.quantitas--;
-  
-}
-
-const titulus = ref<string>('Bases');
-const mutareTitulus = () => {
- if (titulus.value === 'Cosas') {
-   titulus.value = 'Bases';
- } else {
-  titulus.value = 'Cosas';
- }
-}
+const { titulus, mutareTitulus } = useMutare();
+const { producta, quantitatemIncrementa, quantitatemDecrementa } = useProducta();
 
 </script>
 
 
 <template>
-
+<div>
   <h1 v-on:click="mutareTitulus"> {{titulus}}  de Vue + TS</h1>
   <h2>Mi carrito de la compra</h2>
  
@@ -69,6 +31,9 @@ const mutareTitulus = () => {
   @decrementum="quantitatemDecrementa(productum.id)"
   />
  
+
+</div>
+  <PokemonInfo />
 </template>
 <style>
 h1 {
