@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { useFetch } from '../composables/useFetch';
+import type { pokeapiPokemonResponse } from '../interfaces/pokeapi-pokemon.response';
 
 
 interface Pokemon {
@@ -13,7 +14,7 @@ const pokemonId = ref<number>(1);
 
 const pokemon = ref<Pokemon | null>(null)
 
-const { data } = useFetch(
+const { data, isLoading } = useFetch<pokeapiPokemonResponse>(
   () =>`https://pokeapi.co/api/v2/pokemon/${ pokemonId.value }`
 );
 
@@ -36,7 +37,9 @@ watch(data, (novusPokemon: any) => {
   <section v-if="pokemon">
     <h2>#{{ pokemon.id }} {{ pokemon.nomen }}</h2>
 
-    <img :src="pokemon.imagem" :alt="pokemon.nomen">
+    <div v-if="isLoading" class="loading-spinner"></div>
+
+    <img v-else :src="pokemon.imagem" :alt="pokemon.nomen">
 
     <div>
       <button :disabled="pokemonId === 1" @click="pokemonId--">Anterior</button>
@@ -62,7 +65,7 @@ section > div {
   justify-content: space-between;
 }
 
-img {
+img, .loading-spinner{
   width: 120px;
   height: 120px;
   margin-bottom: 10px;
@@ -71,5 +74,27 @@ img {
 button {
   padding: 10px 20px;
 }
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-spinner::before {
+  content: '';
+  width: 40px;
+  height: 40px;
+  border: 2px solid #ddd;
+  border-top: 2px solid #666;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
 
 </style>
